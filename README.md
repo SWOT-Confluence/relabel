@@ -1,0 +1,1 @@
+Relabels original NetCDF variables to match SWOT data description: width, slope2, wse. Creates and calculates the following variables: Qhat, d_x_area.
