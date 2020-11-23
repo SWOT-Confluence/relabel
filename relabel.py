@@ -154,15 +154,12 @@ class Relabel:
 
 		# Qhat
 		qhat_v = self.sword_dataset.createVariable("Qhat", "f8", ("nt"), 
-			fill_value = 99999.0)
+			fill_value = -999999999999)
 		qhat_v.long_name = "Qhat"
-		qhat_v.units = "??"
+		qhat_v.units = "m^3/s"
 		qhat_v[:] = mean(q_v[:], axis=1)
-
-		print(qhat_v[:])
-		print()
-
 
 if __name__ == "__main__":
 	relabel = Relabel()
 	relabel.relabel()
+	print("Files written.")
