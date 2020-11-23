@@ -70,7 +70,13 @@ class Relabel:
 		self.create_reach_vars()
 
 	def create_reach_vars(self):
-		"""Create reach variable(s)."""
+		"""Create reach variables."""
+
+		# nt coordinate variable
+		nt = self.swot_dataset_reach.createVariable("nt", "i4", ("nt",))
+		nt.units = "day"
+		nt.long_name = "nt"
+		nt[:] = self.orig_dataset["Time steps"][:]	
 
 		# slope2
 		slope2_v = self.swot_dataset_reach.createVariable("slope2", "f8", 
@@ -98,6 +104,18 @@ class Relabel:
 
 	def create_xs_vars(self):
 		"""Create coordinate and Node group level variables."""
+
+		# time step coordinate variable
+		nt = self.swot_dataset_node.createVariable("nt", "i4", ("nt",))
+		nt.units = "day"
+		nt.long_name = "nt"
+		nt[:] = self.orig_dataset["Time steps"][:]
+
+		# nx coordinate variable
+		nx = self.swot_dataset_node.createVariable("nx", "i4", ("nx",))
+		nx.units = "orthogonals"
+		nx.long_name = "nx"
+		nx[:] = self.orig_dataset["XS_90m"][:]	
 
 		# width
 		width_v = self.swot_dataset_node.createVariable("width", "f8", ("nt", 
@@ -148,6 +166,12 @@ class Relabel:
 
 	def create_sword_vars(self):
 		""" Create SWORD of Science variables."""
+
+		# time step coordinate variable
+		nt = self.sword_dataset.createVariable("nt", "i4", ("nt",))
+		nt.units = "day"
+		nt.long_name = "nt"
+		nt[:] = self.orig_dataset["Time steps"][:]
 
 		# Q
 		q_v = self.orig_dataset["XS_Timseries/Q"][:]
