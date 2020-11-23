@@ -79,7 +79,7 @@ class Relabel:
 		slope2_v.units = "m/m"
 		slope2_v.valid_min = -0.001
 		slope2_v.valid_max = 0.1
-		slope2_v[:] = self.orig_dataset["Reach_Timeseries/S_90m"][:]
+		slope2_v[:] = self.orig_dataset["Reach_Timeseries/S_1km"][:]
 
 	def build_swot_node(self):
 		"""Build SWOT NetCDF node files from original dataset."""
