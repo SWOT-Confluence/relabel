@@ -80,7 +80,7 @@ class Relabel:
 
 		# slope2
 		slope2_v = self.swot_dataset_reach.createVariable("slope2", "f8", 
-			("nt", "nx"), fill_value = -999999999999)
+			("nt",), fill_value = -999999999999)
 		slope2_v.long_name = "enhanced water surface slope with respect to geoid"
 		slope2_v.units = "m/m"
 		slope2_v.valid_min = -0.001
@@ -181,7 +181,7 @@ class Relabel:
 			fill_value = -999999999999)
 		qhat_v.long_name = "Qhat"
 		qhat_v.units = "m^3/s"
-		qhat_v[:] = mean(q_v[:], axis=1)
+		qhat_v = mean(q_v)
 
 if __name__ == "__main__":
 	relabel = Relabel()
