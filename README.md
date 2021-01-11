@@ -3,7 +3,7 @@
 Relabels original NetCDF variables to match SWOT data description: width, slope2, wse. Creates and calculates the following variables: Qhat, d_x_area.
 
 - 'input' directory contains original NetCDF files.
-- 'output' directory contains output of relabel execution with one netcdf file per reach.
+- 'output' directory contains output of relabel execution with one netcdf file per reach for either SWOT or SWORD data.
 
 # Installation and Execution
 
@@ -14,4 +14,4 @@ Relabels original NetCDF variables to match SWOT data description: width, slope2
 4. Execute relabel in virutal environemtn `python3 relabel.py`
 5. Retrieve output from output directory.
 
-**NOTE: relabel.py creates full data sets which when run with geobamdata may cause your system to crash due to memory constraints. Instead use relabel-small.py to create 5nx by 10nt datasets.**
+**NOTE: relabel.py creates full data sets which when run with geobamdata may cause your system to crash due to memory constraints. Instead use relabel-slice.py to create 10nx by 324nt datasets.**
