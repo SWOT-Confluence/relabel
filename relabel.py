@@ -10,8 +10,8 @@ class Relabel:
 		"""Track datasets and group objects."""
 
 		self.orig_dataset = None
-		self.new_dataset = None
-		self.sword = None
+		self.swot_dataset = None
+		self.sword_dataset = None
 		self.swot_reach = None
 		self.swot_node = None
 
@@ -31,9 +31,9 @@ class Relabel:
 		self.define_datasets(file)
 
 		# Create dimensions and coordinate variables
-		self.create_dims_coords()
+		self.create_dim_coords()
 
-		# Build groups
+		# Build groups for both SWOT and SWORD
 		self.build_groups()
 
 		# Build swot variables (reach and node)
@@ -43,6 +43,10 @@ class Relabel:
 		# Build sword variables
 		self.create_sword_vars()
 
+		# Close datasets
+		self.orig_dataset.close()
+		self.swot_dataset.close()
+		self.sword_dataset.close()
 	
 	def define_datasets(self, file):
 		"""Retrieve original dataset and define SWOT and SWORD of Science datasets."""
@@ -50,39 +54,56 @@ class Relabel:
 		# Retrieve original dataset 
 		self.orig_dataset = Dataset(file, "r", format="NETCDF4")
 
-		# Define new data set that contains: swot reach and node and sword data
-		new_file = Path.cwd() / 'output' / file.name
-		self.new_dataset = Dataset(new_file, "w", format="NETCDF4")
+		# Define new data set that contains: swot reach and node
+		new_file = Path.cwd() / 'output' / 'swot' / self.get_name(file, "SWOT")
+		self.swot_dataset = Dataset(new_file, "w", format="NETCDF4")
+		self.swot_dataset.title = 'SWOT_' + self.orig_dataset.title
 
-		# Set title
-		self.new_dataset.title = self.orig_dataset.title
+		# Define new data set that contains: sword of science
+		new_file = Path.cwd() / 'output' / 'sword' / self.get_name(file, "SWORD")
+		self.sword_dataset = Dataset(new_file, "w", format="NETCDF4")
+		self.sword_dataset.title = 'SWORD_' + self.orig_dataset.title
 
-	def create_dims_coords(self):
-		'''Create dimensions and coordinate variables for each dimension.'''
+	def get_name(self, file, type):
+    	
+		name = file.name.split("_")
+		return type + "_" + name[2] + "_" + name[3]
+
+	def create_dim_coords(self):
+		"""Create dimensions and coordinate variables for each dimension."""
 		
+		# SWOT
+
 		# nt and nx dimensions
-		self.new_dataset.createDimension("nt", 
+		self.swot_dataset.createDimension("nt", 
 			self.orig_dataset.dimensions["Time steps"].size)
-		self.new_dataset.createDimension("nx", 
+		self.swot_dataset.createDimension("nx", 
 			self.orig_dataset.dimensions["XS_90m"].size)
 
 		# time step coordinate variable
-		nt = self.new_dataset.createVariable("nt", "i4", ("nt",))
+		nt = self.swot_dataset.createVariable("nt", "i4", ("nt",))
 		nt.units = "day"
 		nt.long_name = "nt"
 		nt[:] = self.orig_dataset["Time steps"][:]
 
 		# nx coordinate variable
-		nx = self.new_dataset.createVariable("nx", "i4", ("nx",))
+		nx = self.swot_dataset.createVariable("nx", "i4", ("nx",))
 		nx.units = "orthogonals"
 		nx.long_name = "nx"
-		nx[:] = self.orig_dataset["XS_90m"][:]	
+		nx[:] = self.orig_dataset["XS_90m"][:]
+
+		# SWORD
+		# TBD
 
 	def build_groups(self):
-		'''Create swot reach, node and sword groupings.'''
-		self.swot_reach = self.new_dataset.createGroup("swot_reach")
-		self.swot_node = self.new_dataset.createGroup("swot_node")
-		self.sword = self.new_dataset.createGroup("sword")
+		"""Create swot reach, node and sword groupings."""
+
+		# SWOT
+		self.swot_reach = self.swot_dataset.createGroup("swot_reach")
+		self.swot_node = self.swot_dataset.createGroup("swot_node")
+		
+		# SWORD
+		# TBD
 
 	def create_reach_vars(self):
 		"""Create reach variables."""
@@ -140,7 +161,7 @@ class Relabel:
 		q_v = self.orig_dataset["XS_Timseries/Q"][:]
 
 		# Qhat
-		qhat_v = self.sword.createVariable("Qhat", "f8", 
+		qhat_v = self.sword_dataset.createVariable("Qhat", "f8", 
 			fill_value = -999999999999)
 		qhat_v.long_name = "Qhat"
 		qhat_v.units = "m^3/s"
